@@ -6,5 +6,4 @@ packages:
 services:
   - grafana
   - loki
-  - promtail
   - vector
