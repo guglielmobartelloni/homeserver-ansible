@@ -1,0 +1,5 @@
+- name: Install packages
+  ansible.builtin.yum:
+    name: "{{packages}}"
+    state: latest
+    update_cache: yes

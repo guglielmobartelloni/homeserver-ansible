@@ -1,2 +1,6 @@
 user: opc
 domain: bartelloni.it
+
+pakcages:
+  - tmux
+  - docker-compose-plugin
