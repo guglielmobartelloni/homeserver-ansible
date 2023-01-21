@@ -1,6 +1,10 @@
 user: opc
 domain: bartelloni.it
-
-pakcages:
+packages:
   - tmux
   - docker-compose-plugin
+services:
+  - grafana
+  - loki
+  - promtail
+  - vector

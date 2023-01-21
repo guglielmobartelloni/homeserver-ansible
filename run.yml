@@ -5,17 +5,18 @@
 
   tasks:
     # - import_tasks: tasks/base.yml
-    - import_tasks: tasks/base.yml
-    - import_tasks: tasks/traefik.yml
+    # - import_tasks: tasks/base.yml
+    # - import_tasks: tasks/traefik.yml
+    - import_tasks: tasks/containers-setup.yml
 
-  vars:
-    pip_package: python3-pip
-    pip_install_packages:
-      - name: docker
-    docker_users:
-      - opc
-    docker_pip_executable: pip3
-
-  roles:
-    - geerlingguy.pip
-    - geerlingguy.docker
+  # vars:
+  #   pip_package: python3-pip
+  #   pip_install_packages:
+  #     - name: docker
+  #   docker_users:
+  #     - opc
+  #   docker_pip_executable: pip3
+  #
+  # roles:
+  #   - geerlingguy.pip
+  #   - geerlingguy.docker

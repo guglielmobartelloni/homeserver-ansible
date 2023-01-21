@@ -26,9 +26,48 @@ services:
     volumes:
       - uptime-kuma:/app/data
 
+  loki:
+    image: grafana/loki:2.4.0
+    volumes:
+      - ./loki:/etc/loki
+    ports:
+      - "3100:3100"
+    restart: unless-stopped
+    command: -config.file=/etc/loki/loki-config.yml
+
+  promtail:
+    image: grafana/promtail:2.4.0
+    volumes:
+      - /var/log:/var/log
+      - ./promtail:/etc/promtail
+    # ports:
+    #   - "1514:1514" # this is only needed if you are going to send syslogs
+    restart: unless-stopped
+    command: -config.file=/etc/promtail/promtail-config.yml
+
+  grafana:
+    image: grafana/grafana:latest
+    user: "1000"
+    volumes:
+    - ./grafana:/var/lib/grafana
+    restart: unless-stopped
+    labels:
+      traefik.enable: true
+      traefik.http.routers.grafana.entrypoints: "websecure"
+      traefik.http.routers.grafana.rule: "Host(`grafana.bartelloni.it`)"
+      traefik.http.routers.grafana.tls: true
+      traefik.http.routers.grafana.tls.certresolver: "production"
+
+  vector:
+    image: timberio/vector:0.18.1-debian
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./vector/vector-config.toml:/etc/vector/vector.toml:ro
+    ports:
+      - "8383:8383"
+    restart: unless-stopped
+
 volumes:
    uptime-kuma:
-   firefly_iii_upload:
-   firefly_iii_db:
    traefik-ssl-certs:
        driver: local

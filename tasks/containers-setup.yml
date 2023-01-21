@@ -1,0 +1,9 @@
+- name: Copy config for services
+  copy:
+    src: traefik/{{ item }}
+    dest: /home/{{ user }}/traefik/
+    owner: '{{ user }}'
+    group: '{{ user }}'
+    mode: '0744'
+    force: true
+  loop: "{{ services }}"
