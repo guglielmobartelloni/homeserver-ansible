@@ -7,3 +7,26 @@
     mode: '0744'
     force: true
   loop: "{{ services }}"
+
+- name: Install loki plugin for logging
+  community.docker.docker_plugin:
+    plugin_name: miacis/loki-docker-driver:latest
+    state: present
+    alias: loki
+
+- name: Copy docker config for logging
+  copy:
+    src: traefik/config/daemon.json
+    dest: /etc/docker/daemon.json
+    owner: '{{ user }}'
+    group: '{{ user }}'
+    mode: '0755'
+    force: false
+  register: daemonchanged
+
+- name: Restart docker
+  ansible.builtin.systemd:
+    state: restarted
+    daemon_reload: yes
+    name: docker
+  when: daemonchanged.changed

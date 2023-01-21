@@ -48,15 +48,6 @@ services:
       traefik.http.routers.grafana.tls: true
       traefik.http.routers.grafana.tls.certresolver: "production"
 
-  vector:
-    image: timberio/vector:0.18.1-debian
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - ./vector/vector-config.toml:/etc/vector/vector.toml:ro
-    ports:
-      - "8383:8383"
-    restart: unless-stopped
-
 volumes:
    uptime-kuma:
    traefik-ssl-certs:
