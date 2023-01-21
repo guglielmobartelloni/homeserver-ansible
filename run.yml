@@ -1,0 +1,22 @@
+---
+
+- hosts: all
+  become: yes
+
+  tasks:
+    # - import_tasks: tasks/base.yml
+    - import_tasks: tasks/install-docker-compose.yml
+    - import_tasks: tasks/traefik.yml
+
+  vars:
+    pip_package: python3-pip
+    pip_install_packages:
+      - name: docker
+    docker_install_compose: true
+    docker_users:
+      - opc
+    docker_pip_executable: pip3
+
+  roles:
+    - geerlingguy.pip
+    - geerlingguy.docker

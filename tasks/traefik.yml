@@ -1,0 +1,54 @@
+# Traefik 
+- name: Creates directory Traefik
+  file:
+    path: /home/{{ user }}/traefik
+    state: directory
+    owner: '{{ user }}'
+    group: '{{ user }}'
+    mode: '0744'
+
+- name: Creates directory Traefik config
+  file:
+    path: /etc/traefik
+    state: directory
+    owner: '{{ user }}'
+    group: '{{ user }}'
+    mode: '0744'
+
+- name: Creates directory Traefik cert dir
+  file:
+    path: /etc/traefik/certs
+    state: directory
+    owner: '{{ user }}'
+    group: '{{ user }}'
+    mode: '0744'
+
+- name: copy Traefik config file
+  copy:
+    src: traefik/config/traefik.yml
+    dest: /etc/traefik/traefik.yml
+    owner: '{{ user }}'
+    group: '{{ user }}'
+    mode: '0744'
+
+- name: Copy Traefik docker-compose
+  ansible.builtin.copy:
+    src: traefik/docker-compose.yml
+    dest: /home/{{ user }}/traefik/docker-compose.yml
+    owner: '{{ user }}'
+    group: '{{ user }}'
+    mode: '0744'
+
+#Firefly
+# - name: Creates directory for Firefly config
+#   file:
+#     path: /home/{{ user }}/traefik/firefly
+#     state: directory
+#     owner: {{ user }}
+#     group: {{ user }}
+#     mode: '0744'
+#
+# - name: Copy Firefly env file
+#   copy:
+#     src: traefik/firefly/.env
+#     dest: /home/{{ user }}/traefik/firefly/.env

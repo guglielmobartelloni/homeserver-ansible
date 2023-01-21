@@ -1,0 +1,9 @@
+- name: Docker compose
+  ansible.builtin.yum:
+    name: docker-compose-plugin
+    state: latest
+    update_cache: yes
+- name: Tmux
+  ansible.builtin.yum:
+    name: tmux
+    state: latest
