@@ -18,11 +18,3 @@
     owner: '{{ user }}'
     group: '{{ user }}'
     mode: '0744'
-
-- name: Copy Traefik docker-compose
-  ansible.builtin.copy:
-    src: traefik/docker-compose.yml
-    dest: /home/{{ user }}/traefik/docker-compose.yml
-    owner: '{{ user }}'
-    group: '{{ user }}'
-    mode: '0744'

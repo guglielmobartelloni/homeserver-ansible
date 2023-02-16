@@ -14,6 +14,22 @@
     state: present
     alias: loki
 
+- name: Copy db env file
+  ansible.builtin.template:
+    src: traefik/.env
+    dest: /home/{{user}}/traefik/
+    owner: '{{ user }}'
+    group: '{{ user }}'
+    mode: '0744'
+      
+- name: Copy Traefik docker-compose
+  ansible.builtin.copy:
+    src: traefik/docker-compose.yml
+    dest: /home/{{ user }}/traefik/docker-compose.yml
+    owner: '{{ user }}'
+    group: '{{ user }}'
+    mode: '0744'
+
 - name: Copy docker config for logging
   copy:
     src: traefik/config/daemon.json

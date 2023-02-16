@@ -7,3 +7,4 @@ packages:
 services:
   - grafana
   - loki
+  - prometheus

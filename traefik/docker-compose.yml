@@ -48,7 +48,118 @@ services:
       traefik.http.routers.grafana.tls: true
       traefik.http.routers.grafana.tls.certresolver: "production"
 
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus/:/etc/prometheus/
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+    labels:
+      traefik.enable: true
+      traefik.http.routers.prom.entrypoints: "websecure"
+      traefik.http.routers.prom.rule: "Host(`prom.bartelloni.it`)"
+      traefik.http.routers.prom.tls: true
+      traefik.http.routers.prom.tls.certresolver: "production"
+
+  node-exporter:
+    image: quay.io/prometheus/node-exporter:latest
+    ports:
+      - 9100:9100
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+      - /:/host:ro,rslave
+    command: 
+      - '--path.rootfs=/host'
+      - '--path.procfs=/host/proc' 
+      - '--path.sysfs=/host/sys'
+      - --collector.filesystem.ignored-mount-points
+      - "^/(sys|proc|dev|host|etc|rootfs/var/lib/docker/containers|rootfs/var/lib/docker/overlay2|rootfs/run/docker/netns|rootfs/var/lib/docker/aufs)($$|/)"
+
+  cadvisor:
+    image: budry/cadvisor-arm:latest
+    container_name: cadvisor
+    ports:
+    - 8080:8080
+    volumes:
+    - /:/rootfs:ro
+    - /var/run:/var/run:rw
+    - /sys:/sys:ro
+    - /var/lib/docker/:/var/lib/docker:ro
+
+  linkding:
+    container_name: "linkding"
+    image: sissbruecker/linkding:latest
+    volumes:
+      - "./linkding/data:/etc/linkding/data"
+    env_file:
+      - ./linkding/.env
+    restart: unless-stopped
+    labels:
+      traefik.enable: true
+      traefik.http.routers.link.entrypoints: "websecure"
+      traefik.http.routers.link.rule: "Host(`link.bartelloni.it`)"
+      traefik.http.routers.link.tls: true
+      traefik.http.routers.link.tls.certresolver: "production"
+
+  shlink:
+    image: shlinkio/shlink:stable
+    restart: unless-stopped
+    environment:
+      - TZ="Europe/Rome"
+      - DEFAULT_DOMAIN=l.bartelloni.it
+      - IS_HTTPS_ENABLED=true
+      - GEOLITE_LICENSE_KEY=${GEOLITE_LICENSE_KEY}
+    ports:
+      - 9070:8080
+    labels:
+      traefik.enable: true
+      traefik.http.routers.shlink.entrypoints: "websecure"
+      traefik.http.routers.shlink.rule: "Host(`l.bartelloni.it`)"
+      traefik.http.routers.shlink.tls: true
+      traefik.http.routers.shlink.tls.certresolver: "production"
+
+  audiobookshelf:
+    image: ghcr.io/advplyr/audiobookshelf:latest
+    environment:
+      - AUDIOBOOKSHELF_UID=1000
+      - AUDIOBOOKSHELF_GID=1000
+    volumes:
+      - ./audiobookshelf/audiobooks:/audiobooks
+      - ./audiobookshelf/podcasts:/podcasts
+      - ./audiobookshelf/config:/config
+      - ./audiobookshelf/metadata:/metadata
+    labels:
+      traefik.enable: true
+      traefik.http.routers.audiobook.entrypoints: "websecure"
+      traefik.http.routers.audiobook.rule: "Host(`audiobook.bartelloni.it`)"
+      traefik.http.routers.audiobook.tls: true
+      traefik.http.routers.audiobook.tls.certresolver: "production"
+
+  paste:
+    image: danielszabo99/microbin
+    restart: unless-stopped
+    volumes:
+     - ./microbin-data:/app/pasta_data
+    labels:
+      traefik.enable: true
+      traefik.http.routers.paste.entrypoints: "websecure"
+      traefik.http.routers.paste.rule: "Host(`paste.bartelloni.it`)"
+      traefik.http.routers.paste.tls: true
+      traefik.http.routers.paste.tls.certresolver: "production"
+
+
 volumes:
+   pastey-data:
    uptime-kuma:
+   prometheus_data:
    traefik-ssl-certs:
        driver: local
